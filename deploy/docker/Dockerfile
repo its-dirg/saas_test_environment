@@ -10,9 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     xmlsec1 \
     libyaml-dev
 
-RUN pip3 install --src /tmp/src -e git+https://github.com/its-dirg/SATOSA@998c184#egg=SATOSA && \
-    pip3 install -r /tmp/src/satosa/requirements.txt
+RUN pip3 install --src /tmp/src -e git+https://github.com/its-dirg/saas_test_environment@6214995#egg=saas && \
+    pip3 install -r /tmp/src/saas/requirements.txt
 
-COPY start.sh /tmp/saas/
-WORKDIR /tmp/src/satosa/example/
-ENTRYPOINT ["/tmp/saas/start.sh"]
+COPY start.sh /tmp/
+WORKDIR /tmp/src/saas/example/
+ENTRYPOINT ["/tmp/start.sh"]

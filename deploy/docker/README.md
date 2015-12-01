@@ -20,6 +20,8 @@ The directory should have the following structure:
     ├── backend.key
     ├── frontend.crt
     ├── frontend.key
+    ├── https.crt
+    ├── https.key
     ├── plugins
     │   ├── saml2_backend.py
     │   └── saml2_frontend.py
@@ -29,6 +31,7 @@ The directory should have the following structure:
 where
 
 * `{backend, frontend}.{crt, key}` is the cert+key for the SAML SP and IdP of the proxy
+* `{https}.{crt, key}` is the cert+key for HTTPS
 * `plugins/saml2_{backend, frontend}.py` is the configuration of the SAML SP and IdP of the proxy
 * `proxy_conf.yaml` is the configuration of the proxy
 * `sp.xml` is the Service Providers SAML metadata
@@ -42,14 +45,9 @@ The following parameters *MUST* be configured:
 * `USER_ID_HASH_SALT`: random string to be used internally by the proxy when hashing user identifiers
  
 The proxy uses a "secure cookie" (which is only sent over HTTPS) to preserve state, which is why
-the proxy must use HTTPS. This can be achieved in two different ways:
- 
-1. Place the Docker container behind a SSL/TLS termination proxy (e.g. nginx or Apache)
-2. Configure the proxy to use SSL/TLS, by configuring the following parameters:
-    * `HTTPS: Yes`
-    * `SERVER_CERT`: relative path to cert which must be part of the mounted volume
-    * `SERVER_KEY`: relative path to private key which must be part of the mounted volume
-    * `CERT_CHAIN`: relative path to certificate chain which must be part of the mounted volume or `Null` for self-signed cert while testing
+the proxy must use HTTPS. The Docker container uses [gunicorn](http://gunicorn.org/), which supports
+HTTPS, to run the proxy's WSGI application. `gunicorn` is started with the certificate
+in `https.crt` and the associated private key in `https.key`. 
     
 
 ### Backend configuration: `plugins/saml2_backend.py`
@@ -58,7 +56,6 @@ The following parameters *MUST* be configured:
 
 * `sp_config["disco_srv"]`: url of discovery service to let the user choose the IdP
 * `sp_config["metadata"]`: url or path to metadata for backing IdPs, see [pysaml2 metadata configuration](https://github.com/rohe/pysaml2/blob/master/doc/howto/config.rst#metadata).
-* `config["encryption_key"]`: random string to used internally by the proxy to encrypt the state cookie
 
 ## SAML metadata
 
@@ -77,6 +74,6 @@ Building an image from the Dockerfile:
 
 Starting a container from the image:
 
-     docker run [-d] -p <port on host>:<proxy port from proxy_conf.yaml> -v <host directory>:/mnt/config <image name>
+     docker run [-d] -p <port on host>:<proxy_port> -v <host directory>:/mnt/config -e PROXY_PORT=<proxy_port> <image name>
 
     

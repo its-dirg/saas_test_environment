@@ -1,8 +1,5 @@
 #--- SATOSA Config ---#
-HOST: '0.0.0.0'
-PORT: 8000
 BASE: "https://localhost"
-HTTPS: No
 PLUGIN_PATH:
   - "plugins"
 BACKEND_MODULES:
@@ -14,6 +11,10 @@ USER_ID_HASH_SALT: "abcdef"
 #--- Server Config ---#
 STATIC_DIR: '/static'
 LOG_FILE: 'server.log'
+
+INTERNAL_ATTRIBUTES: "internal_attributes.yaml"
+COOKIE_STATE_NAME: "saas_state"
+STATE_ENCRYPTION_KEY: "abcdef"
 
 # Beaker session configuration
 # This session can be configured to use database, file, or memory
