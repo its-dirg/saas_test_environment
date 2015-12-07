@@ -74,6 +74,6 @@ Building an image from the Dockerfile:
 
 Starting a container from the image:
 
-     docker run [-d] -p <port on host>:<proxy_port> -v <host directory>:/mnt/config -e PROXY_PORT=<proxy_port> <image name>
+     docker run [-d] -p <port on host>:<proxy_port> -v <host directory>:/mnt/config -e PROXY_PORT=<proxy_port> -e SATOSA_STATE_ENCRYPTION_KEY=<secret key> -e SATOSA_USER_ID_HASH_SALT=<secret salt> <image name>
 
     
